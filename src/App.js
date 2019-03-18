@@ -1,25 +1,43 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import TvShows from "./components/TvShows.js";
+import Movies from "./components/Movies.js";
+import auth from "./auth/service";
+
+
+// src/App.js
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    auth.loginCallback = this.loggedIn.bind(this);
+    auth.logoutCallback = this.loggedOut.bind(this);
+
+    this.state = { loggedIn: false };
+  }
+
+  loggedIn() {
+    this.setState({ loggedIn: true });
+  }
+
+  loggedOut() {
+    this.setState({ loggedIn: false });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        {this.state.loggedIn ? <Movies /> : <TvShows />}
+        {this.state.loggedIn ? (
+          <button onClick={() => auth.logout()} className="log-in">
+            Log Out
+          </button>
+        ) : (
+          <button onClick={() => auth.login()} className="log-in">
+            Log In
+          </button>
+        )}
       </div>
     );
   }
